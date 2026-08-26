@@ -5,13 +5,13 @@ from gtts import gTTS
 
 # 1. Page Configuration
 st.set_page_config(
-    page_title="Medicine Safety & Voice Assistant", 
+    page_title="Medicine Scanner", 
     page_icon="💊",
     layout="centered"
 )
 
 # 2. App Header
-st.title("💊 Household Medicine Safety Assistant")
+st.title("💊 Medicine Scanner and Assistant")
 st.write("Upload or snap an image of a medicine container to analyze usage guidelines, check expiration dates, and hear instructions read aloud.")
 
 # 3. Sidebar Configuration (Language Selection)
