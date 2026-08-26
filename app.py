@@ -5,14 +5,14 @@ from gtts import gTTS
 
 # 1. Page Configuration
 st.set_page_config(
-    page_title="Medicine Assistant", 
+    page_title="Medicine Safety & Voice Assistant", 
     page_icon="💊",
     layout="centered"
 )
 
 # 2. App Header
-st.title("💊 Medicine Scanner and Assistant")
-st.write("Upload an image of a medicine container to analyze usage guidelines, check expiration dates, and hear instructions read aloud.")
+st.title("💊 Household Medicine Safety Assistant")
+st.write("Upload or snap an image of a medicine container to analyze usage guidelines, check expiration dates, and hear instructions read aloud.")
 
 # 3. Sidebar Configuration (Language Selection)
 st.sidebar.title("Configuration")
@@ -24,10 +24,14 @@ try:
     api_key = st.secrets["GEMINI_API_KEY"]
     client = genai.Client(api_key=api_key)
     
-    uploaded_file = st.file_uploader(
-        "Upload a clear image of the medicine packaging:", 
-        type=["jpg", "jpeg", "png"]
-    )
+    # 4. Input Method: Camera or File Upload
+    input_method = st.radio("Choose input method:", ["Take a Photo (Camera)", "Upload from Gallery"])
+    
+    uploaded_file = None
+    if input_method == "Take a Photo (Camera)":
+        uploaded_file = st.camera_input("Snap a picture of the medicine packaging")
+    else:
+        uploaded_file = st.file_uploader("Choose an image from your device:", type=["jpg", "jpeg", "png"])
     
     if uploaded_file is not None:
         image = Image.open(uploaded_file)
@@ -50,7 +54,7 @@ try:
                     """
                     
                     response = client.models.generate_content(
-                        model="gemini-3.6-flash",
+                        model="gemini-2.0-flash",
                         contents=[image, prompt]
                     )
                     
@@ -62,6 +66,7 @@ try:
                     audio_file_path = "medicine_summary.mp3"
                     tts.save(audio_file_path)
                     
+                    # Standard manual audio player (voice-note style)
                     st.audio(audio_file_path, format="audio/mp3")
                     
                     st.caption("⚠️ Disclaimer: This is an AI-generated educational project. Always verify medicine details with a certified healthcare professional.")
